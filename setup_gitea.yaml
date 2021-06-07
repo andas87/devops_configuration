@@ -1,0 +1,32 @@
+- hosts: localhost
+  vars:
+  - install_dir: /opt/gitea
+  - git_url: https://dl.gitea.io/gitea/1.12.5/gitea-1.12.5-linux-amd64
+  - gitea_in: /home/devops/Downloads/gitea-1.12.5-linux-amd64
+  tasks:
+  - name: Create gitea install folder
+    file:
+      path: "{{ install_dir }}"
+      state: directory
+      mode: 0755
+      owner: devops
+      group: devops
+    become: yes
+      
+ # - name: download Gitea
+ #   get_url:
+ #     url: "{{ git_url }}"
+ #     dest: "{{ install_dir }}"
+ #     force: no
+ #     mode: 0755
+ #   become: yes
+ 
+  - name: Copy Gitea binaries to install folder
+    copy:
+      src: "{{ gitea_in }}"
+      dest: "{{ install_dir }}"
+      remote_src: no
+      mode: 0755
+      owner: devops
+      group: devops
+    become: yes

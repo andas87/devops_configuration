@@ -1,0 +1,25 @@
+- hosts: local
+  tasks:
+  - name: Install GIT
+    apt:
+      name: git
+      update_cache: yes
+      cache_valid_time: 600
+      state: present
+    become: yes
+    
+  - name: Install MAVEN
+    apt:
+      name: maven
+      update_cache: yes
+      cache_valid_time: 600
+      state: present
+    become: yes
+      
+  - name: Install MYSQL
+    apt:
+      name: mysql-server
+      update_cache: yes
+      cache_valid_time: 600
+      state: present
+    become: yes

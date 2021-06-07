@@ -1,0 +1,25 @@
+- hosts: localhost
+
+  vars:
+   - jenkins_repo_url: deb https://pkg.jenkins.io/debian-stable binary/
+   - jenkins_repo_key_url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+   
+  tasks: 
+  - name: Add Jenkins apt repository key
+    apt_key:
+      url: "{{ jenkins_repo_key_url }}"
+      state: present
+    become: yes
+    
+  - name: Add Jenkins apt repository
+    apt_repository:
+      repo: "{{ jenkins_repo_url }}"     
+      update_cache: true
+      state: present
+    become: yes
+    
+  - name: Install Jenkins
+    apt:
+      name: jenkins
+      state: present
+    become: yes

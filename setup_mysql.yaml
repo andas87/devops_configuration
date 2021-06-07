@@ -1,0 +1,52 @@
+- hosts: localhost
+  
+  vars: 
+  - mysql_root_password: root
+  
+  tasks:
+  - name: specify root password
+    debconf:
+      name: mysql-server
+      question: mysql-server/root_password
+      value: "{{ mysql_root_password | quote}}"
+      vtype: password
+    become: true
+    
+  - name: confirm root password again
+    debconf:
+      name: mysql-server
+      question: mysql-server/root_password_again
+      value: "{{ mysql_root_password | quote}}"
+      vtype: password
+    become: true
+    
+  - name: Install mysql
+    apt: 
+      name: mysql-server
+      update_cache: yes
+      cache_valid_time: 600
+      state: present
+    become: yes
+    
+  - name: Install python3-PyMySQL lib
+    apt: 
+      name: python3-pymysql
+      state: present
+    become: yes
+    
+  - name: Ensure MySQL is enabled to run on startup
+    service: 
+      name: mysql
+      state: started
+    become: true  
+            
+ # - name: update mysql root password
+ #   mysql_user:
+ #     login_host: localhost
+ #     login_user: root
+ #     login_password: "{{ mysql_root_password }}"
+ #     name: root
+ #     password: "{{ mysql_root_password }}"
+ #     check_implicit_admin: true
+ #   become: yes
+

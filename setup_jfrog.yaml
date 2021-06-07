@@ -1,0 +1,19 @@
+- hosts: localhost
+  vars:
+  - install_dir: /opt/jfrog
+  - jfrog_in: /home/devops/Downloads/jfrog-artifactory-oss-7.18.5-linux.tar.gz
+  tasks:
+  - name: Create install folder
+    file: 
+      path: "{{ install_dir }}"
+      state: directory
+      mode: 0755
+      owner: devops
+      group: devops
+    become: yes
+      
+  - name: Unarchive JFrog
+    unarchive:
+       src: "{{ jfrog_in }}"
+       dest: "{{ install_dir }}"
+       remote_src: no

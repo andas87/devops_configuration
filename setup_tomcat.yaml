@@ -1,0 +1,40 @@
+- hosts: localhost
+ 
+  vars:
+  - install_dir: /opt/tomcat
+  #- tomcat_url: https://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.65/bin/apache-tomcat-8.5.65.tar.gz
+  - tomcat_in: /home/devops/Downloads/apache-tomcat-8.5.65.tar.gz
+  - tomcat_conn_port: 5050
+  - tomcat_redirect_port: 5443
+  - tomcat_server_port: 5005
+  - rolename1: manager-gui
+  - rolename2: manager-script
+  - tomcat_user: admin
+  - tomcat_pass: admin
+  - tomcat_admin_roles: manager-gui,manager-script
+  tasks:
+  - name: Create tomcat install folder
+    file:
+      path: "{{ install_dir }}"
+      state: directory
+      mode: 0755
+    #become: yes
+    
+  - name: Download and unarchive tomcat
+    unarchive:
+      #src: "{{ tomcat_url }}"
+      src: "{{ tomcat_in }}"
+      dest: "{{ install_dir }}"
+      remote_src: no
+    #become: yes  
+    
+  - name: Update server.xml
+    template:
+      src: /home/devops/lab_ansible/templates/server.xml.j2
+      dest: "{{ install_dir }}/apache-tomcat-8.5.65/conf/server.xml"
+      
+  - name: Update tomcat-users.xml
+    template:
+      src: /home/devops/lab_ansible/templates/tomcat-users.xml.j2
+      dest: "{{ install_dir }}/apache-tomcat-8.5.65/conf/tomcat-users.xml"
+  

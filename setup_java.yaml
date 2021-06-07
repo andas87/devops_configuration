@@ -1,0 +1,32 @@
+- hosts: local
+  vars: 
+  - JVM: /usr/lib/jvm/java-11-openjdk-amd64
+  - PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  - FILE_PATH: /etc/profile
+  tasks:
+  - name: Install JAVA
+    apt:
+      name: openjdk-11-jdk
+      update_cache: yes
+      cache_valid_time: 600
+      state: present
+    become: yes
+ # Using custom script to update JAVA_HOME and PATH
+ # - name: Execute script to set path variable
+ #   command: sh /home/devops/lab_ansible/set_java.sh
+ #   become: yes
+ # Using ansible command to update JAVA_HOME and PATH
+  - name: Set JAVA_HOME variable
+    lineinfile:
+      path: "{{ FILE_PATH }}"
+      state: present
+      regexp: '^export JAVA_HOME'
+      line: 'export JAVA_HOME={{ JVM }}'
+    become: yes
+  - name: Set PATH variable
+    lineinfile:
+      path: "{{ FILE_PATH }}"
+      state: present
+      regexp: '^export PATH'
+      line: 'export PATH={{ PATH }}:{{ JVM }}/bin'
+    become: yes
