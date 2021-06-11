@@ -1,0 +1,30 @@
+- hosts: localhost
+  
+  vars: 
+    - container_name: cadvisor
+    - container_image: google/cadvisor:latest
+  
+  tasks:
+  - name: Set permission to docker.sock file
+    file:
+      path: /var/run/docker.sock
+      state: file
+      mode: 0777
+    become: yes
+    
+  - name:
+    docker_container:
+      name: "{{ container_name }}"
+      image: "{{ container_image }}"
+      detach: yes
+      published_ports: 4040:8080
+      volumes: 
+       - /:/rootfs:ro
+       - /var/run:/var/run:ro
+       - /sys:/sys:ro
+       - /var/lib/docker/:/var/lib/docker:ro
+       - /dev/disk/:/dev/disk:ro
+      privileged: yes
+      devices: /dev/kmsg
+      state: started
+      restart: yes
